@@ -1,6 +1,9 @@
 /** zs-apc-spdu-ctl zs_snmp.cxx
     (C) 2018 Erik Zscheile
     License: MIT
+
+    License WARNING: parts of this file come from 'net-snmp',
+      look at docs/COPYING.net-snmp
  **/
 
 #include <stdio.h>
