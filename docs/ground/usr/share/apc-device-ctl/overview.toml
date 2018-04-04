@@ -1,12 +1,12 @@
 [package]
-    name = apc-device-ctl
+    name = "apc-device-ctl"
 
     [package.version]
 	major = 0
 	minor = 1
 	patch = 0
 	api = 1
-	name = newdoors
+	name = "newdoors"
 
 [config]
     file = "/etc/apc-device-ctl.conf"

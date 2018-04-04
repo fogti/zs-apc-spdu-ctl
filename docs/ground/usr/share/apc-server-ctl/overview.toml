@@ -1,12 +1,12 @@
 [package]
-    name = apc-server-ctl
+    name = "apc-server-ctl"
 
     [package.version]
 	major = 1
 	minor = 0
 	patch = 0
 	api = 3
-	name = profitable
+	name = "profitable"
 
 [config]
     file = "/etc/apc-server-ctl.conf"
