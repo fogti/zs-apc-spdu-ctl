@@ -1,0 +1,9 @@
+/** zs-apc-spdu-ctl config.h.in
+      build time configuration
+    (C) 2018 Erik Zscheile
+    License: MIT
+ **/
+
+#pragma once
+#cmakedefine HAVE_CXXH_EX_STRING_VIEW
+#cmakedefine HAVE_CXXH_STRING_VIEW

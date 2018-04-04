@@ -1,0 +1,12 @@
+missing functions: TRACK, UNTRACK
+
+TRACK scheme:
+  if ... &>/dev/null
+    if already tracked
+      : online
+      + track
+    else
+      : tracked
+  else
+    : offline
+    exit 1

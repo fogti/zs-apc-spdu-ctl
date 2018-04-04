@@ -7,13 +7,17 @@ apc 192.168.6.88
 host 192.168.6.50
 outlets 5
 
-:invalid1
+:router
+host 192.168.6.1
+outlets 8
 
-:invalid2
-apc 192.168.0.1
+#:invalid1
 
-:invalid3
-host 5.5.5.5
+#:invalid2
+#apc 192.168.0.1
 
-:invalid4
-outlets 1
+#:invalid3
+#host 5.5.5.5
+
+#:invalid4
+#outlets 1

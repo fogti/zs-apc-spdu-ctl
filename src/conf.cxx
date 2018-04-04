@@ -84,3 +84,8 @@ bool zs::config::read_from(const string &file) {
 
   return !err;
 }
+
+auto zs::config::get_apc_of(const config_ent* const ent) -> const char * {
+  if(ent && !ent->apc.empty()) return ent->apc.c_str();
+  return apc.c_str();
+}

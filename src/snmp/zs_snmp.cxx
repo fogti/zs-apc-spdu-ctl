@@ -9,9 +9,9 @@
 // include snmp.h after zs_snmp.hpp
 //  because NETSNMP_IMPORT must be defined before include snmp.h
 #include "zs_snmp.hpp"
-#include <snmp.h>
-#include <asn1.h>
-#include <system.h>
+#include <net-snmp/library/snmp.h>
+#include <net-snmp/library/asn1.h>
+#include <net-snmp/library/system.h>
 
 using namespace std;
 

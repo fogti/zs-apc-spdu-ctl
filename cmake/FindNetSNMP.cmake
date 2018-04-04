@@ -18,7 +18,7 @@ if(NETSNMP_INCLUDE_DIRS)
   # Already in cache, be silent
   set(NETSNMP_FIND_QUIETLY TRUE)
 else()
-  find_path(NETSNMP_INCLUDE_DIR snmp.h /usr/include/net-snmp/library)
+  find_path(NETSNMP_INCLUDE_DIR net-snmp/library/snmp.h /usr/include)
   set(NETSNMP_INCLUDE_DIRS "${NETSNMP_INCLUDE_DIR}")
 endif()
 
