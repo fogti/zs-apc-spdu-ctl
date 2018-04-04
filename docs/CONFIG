@@ -1,0 +1,19 @@
+# config example
+# standard location: /etc/zs-apc-spdu.conf
+
+apc 192.168.6.88
+
+:raspi
+host 192.168.6.50
+outlets 5
+
+:invalid1
+
+:invalid2
+apc 192.168.0.1
+
+:invalid3
+host 5.5.5.5
+
+:invalid4
+outlets 1

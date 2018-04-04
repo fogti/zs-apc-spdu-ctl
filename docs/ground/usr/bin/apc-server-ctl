@@ -1,0 +1,66 @@
+#!/bin/bash
+
+MODULE="$1"
+CNF="$2"
+CNF_FILE='/etc/apc-server-ctl.conf'
+VAR_DIR='/var/lib/apc-server-ctl'
+LOG='/var/log/apc-server-ctl.log'
+if [ -f "${CNF_FILE}" ]; then
+	source "${CNF_FILE}"
+else
+	echo "${CNF_FILE}: configuration file not found"
+	exit 1
+fi
+[ -d "${VAR_DIR}" ] || mkdir -p "${VAR_DIR}"
+
+case "${MODULE}" in
+	(status)
+		CNT1=1
+		SIZEL=`expr length $OUTLETS`
+		G_STATUS=`snmpget -v1 -c public ${APC} .1.3.6.1.4.1.318.1.1.4.2.2.0 | cut -f2 -d'=' | cut -f2 -d':' | cut -f2 -d'"'`
+		while [ $CNT1 -le $SIZEL ] ; do
+			CH=`echo $OUTLETS | cut -c $CNT1`
+			STATUS=`echo ${G_STATUS} | cut -f${CNT1} -d' '`
+			echo "${CH}=${STATUS}"
+			CNT1=`expr $CNT1 + 1`
+		done
+		;;
+
+	(switch-on)
+		CNT1=1
+		SIZEL=`expr length $OUTLETS`
+		while [ $CNT1 -le $SIZEL ] ; do
+			CH=`echo $OUTLETS | cut -c $CNT1`
+			/usr/bin/snmpset -v1 -c private $APC .1.3.6.1.4.1.318.1.1.4.4.2.1.3.$CH i 1
+			CNT1=`expr $CNT1 + 1`
+		done
+
+		while sleep 1; do
+			/usr/sbin/fping "${HOST}" &>/dev/null && break
+			sleep 1; echo -n "."
+		done
+		echo "- online"
+		echo `date +%s`": $0[$$]: ${CNF}: host ${HOST} is online!" &>> $LOG
+		echo "${CNF}" >> "${VAR_DIR}/tracked"
+		;;
+
+	(track)
+		if /usr/sbin/fping "${HOST}" &>/dev/null; then
+			echo "online"
+
+			TMP_FILE=$(mktemp)
+			grep -xv "${CNF}" "${VAR_DIR}/tracked" >> "${TMP_FILE}"
+			if ! diff "${VAR_DIR}/tracked" "${TMP_FILE}" >/dev/null; then
+				echo `date +%s`": $0[$$]: ${CNF}: host ${HOST} is online!" &>> $LOG
+				echo "${CNF}" >> "${VAR_DIR}/tracked"
+			fi
+			rm ${TMP_FILE}
+		else
+			echo "offline"
+			exit 1
+		fi
+		;;
+
+	(*)	echo "${MODULE}: module not found! Exit"
+		exit 2
+esac

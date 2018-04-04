@@ -1,0 +1,6 @@
+PACKAGE			VER	API	VNAME
+
+apc-device-ctl		0.1.0	1	Newdoors
+apc-server-ctl		1.0.0	3	Profitable
+
+apc-spdu		0.0.1	0	Porkstream

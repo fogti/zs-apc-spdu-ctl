@@ -1,0 +1,27 @@
+# 3rd ground
+/docs/ground/fping-3.13
+/docs/ground/net-snmp-5.7.3
+
+# build
+build*/
+
+*.slo
+*.lo
+*.o
+*.obj
+
+*.d
+*.gch
+*.pch
+
+*.so
+*.dylib
+*.dll
+*.lai
+*.la
+*.a
+*.lib
+
+*.exe
+*.out
+*.app

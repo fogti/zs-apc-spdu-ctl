@@ -1,0 +1,6 @@
+cmd: snmpset -v1 -c private $APC $OID i $ST
+
+STs:
+  1 on
+  2 off
+  3 restart

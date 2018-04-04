@@ -1,0 +1,15 @@
+[package]
+    name = apc-server-ctl
+
+    [package.version]
+	major = 1
+	minor = 0
+	patch = 0
+	api = 3
+	name = profitable
+
+[config]
+    file = "/etc/apc-server-ctl.conf"
+
+[log]
+    file = "/var/log/apc-server-ctl.log"

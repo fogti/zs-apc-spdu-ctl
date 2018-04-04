@@ -1,0 +1,8 @@
+documentation for zs_snmp::parse_stat
+
+STATES:
+
+  ' ' -'O'-> 'O' --'n'-> 'n' ------+-' '-> ' '
+              |                    |
+              |                    |
+              `---'f'-> 'f' -'f'-> 0

@@ -1,0 +1,7 @@
+:package
+name apc-spdu-ctl
+version 0.0.1 porkstream
+
+:files
+config /etc/apc-spdu-ctl/
+logfile /var/log/apc-spdu.log

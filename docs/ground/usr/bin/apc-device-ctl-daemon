@@ -1,0 +1,25 @@
+#!/bin/bash
+
+(
+	timed_log_entry() {
+		echo `date +%s`": $0[$$]: $1" &>> $LOG
+	}
+
+	PID_FILE='/run/apc-device-ctl-daemon.pid'
+	if [ -f "${PID_FILE}" ]; then
+		timed_log_entry "deamon not started because pid file already exists"
+		exit
+	fi
+	timed_log_entry "daemon started"
+	echo "$$" > ${PID_FILE}
+
+	trap 'break' 2 15
+	while true; do
+		cmd="$(nc -l -p 8100)"
+		apc-device-ctl ${cmd#* } | nc "$(echo "$cmd" | cut -f1 -d' ')" 8101 -w 10
+	done
+	trap '' 2 15
+
+	rm ${PID_FILE}
+	timed_log_entry "daemon stopped"
+) &
