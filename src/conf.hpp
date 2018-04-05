@@ -25,6 +25,13 @@ struct config_ent {
   bool host_is_ipv6() noexcept;
   bool host_is_online();
 
+  /* wait_for_host
+   * waits for a host to become up/down
+   * @param online  specified target (1 -> wait for up ...)
+   * @return success?
+   */
+  bool wait_for_host(const bool online);
+
   /* set_outlets
    * sets on/off outlets
    * @param &snmp  expected already initialized zs::snmp instance

@@ -75,21 +75,22 @@ int main(int argc, char *argv[]) {
     if(selent->set_outlets(my_snmp, ZS_SNMP_ON) != zs::ent_snmp_state::DONE)
       return 2;
 
-    while(true) {
-      this_thread::sleep_for(chrono::seconds(1));
-      putchar('.');
-      if(selent->host_is_online()) break;
+    printf("waiting for server to start ... ");
+    if(!selent->wait_for_host(true)) {
+      puts("- failed");
+      return 2;
     }
 
-    puts(" - online");
+    puts("- online");
   } else if(args.action == "switch-off") {
     zs::snmp my_snmp;
     if(!my_snmp.init(config.get_apc_of(selent), "private"))
       return 2;
 
-    while(selent->host_is_online()) {
-      putchar('.');
-      this_thread::sleep_for(chrono::seconds(1));
+    printf("waiting for server to shutdown ... ");
+    if(!selent->wait_for_host(false)) {
+      puts("- failed");
+      return 2;
     }
 
     this_thread::sleep_for(chrono::seconds(1));
@@ -97,7 +98,7 @@ int main(int argc, char *argv[]) {
     if(selent->set_outlets(my_snmp, ZS_SNMP_OFF) != zs::ent_snmp_state::NONE)
       return 2;
 
-    puts(" - offline");
+    puts("- offline");
   }
 
   return 0;
