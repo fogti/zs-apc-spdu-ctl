@@ -55,29 +55,25 @@ int main(int argc, char *argv[]) {
       future<bool> is_online = async(launch::async, [&] { return selent->host_is_online(); });
 
       printf("OUTLETS: ");
-      switch(selent->get_outlets(my_snmp)) {
-        case zs::ent_snmp_state::FAIL:
-          puts("unknown"); break;
-        case zs::ent_snmp_state::DONE:
-          puts("on"); break;
-        case zs::ent_snmp_state::PARTIAL:
-          puts("partial on"); break;
-        default: puts("off");
-      }
-      printf("NETWORK: %sline\n", is_online.get() ? "on" : "off");
-      return true;
-    }}},
-    { "status-detail", { false, [&] {
       vector<bool> st;
-      if(!my_snmp.get_stat(st)) {
-        printf(". = u\n");
-        return false;
+      if(!my_snmp.get_stat(st))
+        puts("unknown");
+      else {
+        switch(selent->get_outlets(my_snmp)) {
+          case zs::ent_snmp_state::DONE:
+            puts("on"); break;
+          case zs::ent_snmp_state::PARTIAL:
+            puts("partial on"); break;
+          default: puts("off");
+        }
+
+        for(const auto i : selent->outlets) {
+          if(!i || (i - 1) > st.size()) continue;
+          printf("  %u = %d\n", static_cast<uint32_t>(i), st[i - 1] ? 1 : 0);
+        }
       }
 
-      for(const auto i : selent->outlets) {
-        if(!i || (i - 1) > st.size()) continue;
-        printf("%u = %d\n", static_cast<uint32_t>(i), st[i - 1] ? 1 : 0);
-      }
+      printf("NETWORK: %sline\n", is_online.get() ? "on" : "off");
       return true;
     }}},
     { "switch-on", { true, [&] {
