@@ -51,7 +51,7 @@ bool zs::config::read_from(const string &file) {
       if(!err) {
         const auto it = _entfns.find(line.substr(0, sppos));
         if(it == _entfns.end()) err = true;
-        else it->second(entdat, line.substr(sppos));
+        else it->second(entdat, line.substr(sppos + 1));
       }
     } else {
       // global settings
