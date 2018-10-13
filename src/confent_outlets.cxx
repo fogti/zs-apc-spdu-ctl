@@ -12,7 +12,7 @@ namespace zs {
 auto config_ent::set_outlets(zs::snmp &my_snmp, const uint8_t val) -> ent_snmp_state {
   size_t cnt = 0;
   for(const auto i : outlets) if(my_snmp.set_outlet(i, val)) ++cnt;
-  return outlets_cnt2state(cnt);
+  return outlets_cnt2state((val == ZS_SNMP_OFF) ? (outlets.size() - cnt) : cnt);
 }
 
 auto config_ent::get_outlets(zs::snmp &my_snmp) -> ent_snmp_state {

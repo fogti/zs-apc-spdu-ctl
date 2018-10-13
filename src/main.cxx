@@ -94,16 +94,17 @@ int main(int argc, char *argv[]) {
       return true;
     }}},
     { "switch-off", { true, [&] {
-      printf("waiting for server to shutdown ... ");
+      printf("waiting for server to stop ...\n");
       if(!selent->wait_for_host(false)) {
         puts("- failed");
         return false;
       }
+      fflush(stdout);
 
       // graceful shutdown
       this_thread::sleep_for(chrono::seconds(1));
 
-      if(selent->set_outlets(my_snmp, ZS_SNMP_OFF) != zs::ent_snmp_state::DONE) {
+      if(selent->set_outlets(my_snmp, ZS_SNMP_OFF) != zs::ent_snmp_state::NONE) {
         puts("- partial");
         return false;
       }
