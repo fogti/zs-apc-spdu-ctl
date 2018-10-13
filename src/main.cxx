@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
   {
     const auto actit = jt.find(args.action);
     if(actit == jt.end()) {
-      fprintf(stderr, "UNKNOWN ACTION\n");
+      fprintf(stderr, "%s: UNKNOWN ACTION\n", args.action.c_str());
       return 1;
     }
     actiondata = actit->second;
