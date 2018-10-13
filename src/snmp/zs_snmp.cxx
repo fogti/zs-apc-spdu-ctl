@@ -142,8 +142,9 @@ bool zs::snmp::set_outlet(uint8_t outlet, uint8_t val) {
       if(response->errstat == SNMP_ERR_NOERROR) {
         const auto vars = response->variables;
         const char *st = handle_vars2err(vars);
+        const bool is_int = (vars->type == ASN_INTEGER);
         if(!st) {
-          if(vars->type != ASN_INTEGER)
+          if(!is_int)
             st = "wrong var type (expected INTEGER)";
           else {
             st = "OK";
@@ -152,7 +153,7 @@ bool zs::snmp::set_outlet(uint8_t outlet, uint8_t val) {
         }
         fprintf(stderr, "zs::snmp::set_outlet: %s @ peer %s\n", st, _sess->peername);
 
-        if(vars->type == ASN_INTEGER) {
+        if(is_int) {
           fprintf(stderr, "zs::snmp::set_outlet: %s:%u:%u = %ld\n", _sess->peername,
                   static_cast<uint32_t>(outlet), static_cast<uint32_t>(val),
                   *vars->val.integer);

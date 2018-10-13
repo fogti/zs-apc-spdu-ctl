@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Threads REQUIRED)
 find_package(NetSNMP REQUIRED)
+find_package(LowlevelZS REQUIRED)
 
 include(CheckIncludeFileCXX)
 check_include_file_cxx("string_view" HAVE_CXXH_STRING_VIEW)
