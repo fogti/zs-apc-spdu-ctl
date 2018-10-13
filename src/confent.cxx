@@ -80,7 +80,7 @@ static bool spawn_prog(const vector<string> &args) {
 
   // parent process
   int status;
-  while(0 == waitpid(pid, &status, 0)) ;
+  while(-1 == waitpid(pid, &status, 0)) ;
   return (WIFEXITED(status) && WEXITSTATUS(status) == 0);
 }
 

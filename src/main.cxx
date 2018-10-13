@@ -4,13 +4,11 @@
  **/
 
 #include <stdio.h>
-#include <signal.h>
 #include <future>
 #include <thread>
 #include <chrono>
 #include <functional>
 #include <unordered_map>
-#include <zs/ll/zsig.h>
 
 #include "args.hpp"
 #include "conf.hpp"
@@ -125,8 +123,6 @@ int main(int argc, char *argv[]) {
 
   if(!my_snmp.init(config.get_apc_of(selent), actiondata.need_priv ? "private" : "public"))
     return 2;
-
-  my_signal(SIGCHLD, SIG_IGN);
 
   if(!actiondata.fn())
     return 2;
