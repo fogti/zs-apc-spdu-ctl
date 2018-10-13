@@ -21,38 +21,28 @@ bool zs::snmp::parse_stat(const std::string &in, std::vector<bool> &out) {
 
   for(const auto i : in) {
     switch(state) {
-      case 0: // 'f' 2
-        if(i != ' ') return false;
-        state = i;
-        out.emplace_back(false);
-        break;
-
       case ' ':
-        if(i == ' ') break;
-        if(i != 'O') return false;
-        state = i;
+        if(i == 'O')     break;
+      case 0: // 'f' 2
+      case 'n':
+        if(i != ' ')     return false;
+        if(state != ' ') out.emplace_back(state);
         break;
 
       case 'O':
-        switch(i) {
-          case 'n': case 'f': state = i; break;
-          default: return false;
-        }
-        break;
-
-      case 'n':
-        if(i != ' ') return false;
-        state = i;
-        out.emplace_back(true);
+        // the following checks for 'n' & 'f'
+        if((i | 0x8) != 0x6e)
+          return false;
         break;
 
       case 'f':
         if(i != 'f') return false;
         state = 0;
-        break;
+        continue;
 
       default: return false;
     }
+    state = i;
   }
 
   return (state == ' ');
