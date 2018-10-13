@@ -4,6 +4,7 @@
  **/
 
 #include <stdio.h>
+#include <future>
 #include <thread>
 #include <chrono>
 
@@ -52,6 +53,7 @@ int main(int argc, char *argv[]) {
     if(!my_snmp.init(config.get_apc_of(selent), "public"))
       return 2;
 
+    future<bool> is_online = async(launch::async, [&] { return selent->host_is_online(); });
     vector<bool> st;
     if(!my_snmp.get_stat(st)) return 2;
 
@@ -65,8 +67,7 @@ int main(int argc, char *argv[]) {
         puts("partial on"); break;
       default: puts("off");
     }
-    printf("NETWORK: ");
-    puts(selent->host_is_online() ? "online" : "offline");
+    printf("NETWORK: %sline\n", is_online.get() ? "on" : "off");
   } else if(args.action == "switch-on") {
     zs::snmp my_snmp;
     if(!my_snmp.init(config.get_apc_of(selent), "private"))

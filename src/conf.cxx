@@ -33,11 +33,13 @@ bool zs::config::read_from(const string &file) {
     return false;
   }
 
-  string line, entname;
+  string line, entname = "GLOBAL";
   config_ent *entdat = nullptr;
+  bool err;
 
   while(getline(in, line)) {
     if(line.empty() || line.front() == '#') continue;
+    err = false;
 
     if(line.front() == ':') {
       entname = line.substr(1);
@@ -45,20 +47,20 @@ bool zs::config::read_from(const string &file) {
     } else if(entdat) {
       // entry settings
       const auto sppos = line.find_first_of(' ');
-      bool err = (sppos == string::npos);
+      err = (sppos == string::npos);
       if(!err) {
         const auto it = _entfns.find(line.substr(0, sppos));
         if(it == _entfns.end()) err = true;
         else it->second(entdat, line.substr(sppos));
       }
-      if(err) fprintf(stderr, "%s: CONFIG ERROR @ %s: invalid line: %s\n", file.c_str(), entname.c_str(), line.c_str());
     } else {
       // global settings
       if(line.substr(0, 4) == "apc ")
         apc = line.substr(4);
       else
-        fprintf(stderr, "%s: CONFIG ERROR @ GLOBAL: invalid line: %s\n", file.c_str(), line.c_str());
+        err = true;
     }
+    if(err) fprintf(stderr, "%s: CONFIG ERROR @ %s: invalid line: %s\n", file.c_str(), entname.c_str(), line.c_str());
   }
 
   if(ents.empty()) {
@@ -66,20 +68,18 @@ bool zs::config::read_from(const string &file) {
     return false;
   }
 
-  bool err = false;
+  err = false;
   for(const auto &i : ents) {
-    if(i.second.host.empty()) {
-      fprintf(stderr, "%s: CONFIG ERROR @ %s: no host given\n", file.c_str(), i.first.c_str());
-      err = true;
-    }
-    if(i.second.apc.empty() && apc.empty()) {
-      fprintf(stderr, "%s: CONFIG ERROR @ %s: no APC SPDU given\n", file.c_str(), i.first.c_str());
-      err = true;
-    }
-    if(i.second.outlets.empty()) {
-      fprintf(stderr, "%s: CONFIG ERROR @ %s: no outlets given\n", file.c_str(), i.first.c_str());
-      err = true;
-    }
+    const auto chk_missing_field = [&](const char *fieldname, const auto &fieldcont) {
+      if(fieldcont.empty()) {
+        fprintf(stderr, "%s: CONFIG ERROR @ %s: no %s given\n", file.c_str(), i.first.c_str(), fieldname);
+        err = true;
+      }
+    };
+    chk_missing_field("host", i.second.host);
+    if(apc.empty())
+      chk_missing_field("APC SPDU", i.second.apc);
+    chk_missing_field("outlets", i.second.outlets);
   }
 
   return !err;
