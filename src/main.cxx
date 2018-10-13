@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
       if(!my_snmp.get_stat(st))
         puts("unknown");
       else {
-        switch(selent->get_outlets(my_snmp)) {
+        switch(selent->get_outlets(st)) {
           case zs::ent_snmp_state::DONE:
             puts("on"); break;
           case zs::ent_snmp_state::PARTIAL:
