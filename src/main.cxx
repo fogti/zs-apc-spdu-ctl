@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
       // graceful shutdown
       this_thread::sleep_for(chrono::seconds(1));
 
-      if(selent->set_outlets(my_snmp, ZS_SNMP_OFF) != zs::ent_snmp_state::NONE) {
+      if(selent->set_outlets(my_snmp, ZS_SNMP_OFF) != zs::ent_snmp_state::DONE) {
         puts("- partial");
         return false;
       }
