@@ -10,11 +10,41 @@
 
 using namespace std;
 
+static void print_usage() {
+  fprintf(stderr, "USAGE: zs-apc-spdu-ctl [--conf CONFIGFILE] ACTION OBJECT\n");
+}
+
 bool zs::parse_args(const int argc, char *argv[], args_data &args) {
   args.conffile = "/etc/zs-apc-spdu.conf";
 
+  if(argc == 2 && zs::string_view(argv[1]) == "--help") {
+    print_usage();
+    printf("\n"
+      "  --conf CONFIGFILE  [default = %s]  use a different configuration\n"
+      "\n"
+      "actions:\n"
+      "  status             print combined outlet status + is-online (via fping)\n"
+      "  status-detail      print all associated outlets separately (instead of combined on/off/partial)\n"
+      "  switch-on          foreach assoc outlet = ON + wait for is-online\n"
+      "  switch-off         wait for is-offline + foreach assoc outlet = OFF\n"
+      "\n"
+      "config syntax:\n"
+      "  # global scope\n"
+      "  apc MASTER-APC     (optional) specify the default used APC\n"
+      "\n"
+      "  # local scope\n"
+      "  :OBJECT            specify the OBJECT name\n"
+      "  apc APC            (optional if GLOBAL apc is set) specify an APC for this OBJECT only\n"
+      "  outlets 1 4 7      specify the associated outlets\n"
+      "  host HOST          specify the ping'ed host\n"
+      "\n"
+      "(C) 2018 Erik Zscheile\n"
+      , args.conffile.c_str());
+    return false;
+  }
+
   if(argc < 3) {
-    fprintf(stderr, "USAGE: zs-apc-spdu-ctl [--conf CONFIGFILE] ACTION OBJECT\n");
+    print_usage();
     return false;
   }
 

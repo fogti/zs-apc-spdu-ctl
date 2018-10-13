@@ -57,6 +57,7 @@ bool config_ent::wait_for_host(const bool online) {
   // wait for online max ~8,5 minutes
   if(online) cmd += " -r 10";
   cmd += " '" + host + "' &>/dev/null";
+  cmd.shrink_to_fit();
   if(online) return system(cmd.c_str());
 
   // wait for offline, but max 2 minutes
