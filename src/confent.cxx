@@ -47,7 +47,7 @@ bool config_ent::host_is_ipv6() noexcept {
   return _cached_ipv6[1];
 }
 
-static bool prepare_fping_args(vector<string> &args, const bool use_ipv6, const string &host, const vector<string> &extra_args) {
+static void prepare_fping_args(vector<string> &args, const bool use_ipv6, const string &host, const vector<string> &extra_args) {
   args.clear();
   args.reserve(3 + extra_args.size());
   args.emplace_back("/usr/sbin/fping");
@@ -56,23 +56,22 @@ static bool prepare_fping_args(vector<string> &args, const bool use_ipv6, const 
   args.insert(args.end(), extra_args.begin(), extra_args.end());
   args.emplace_back(host);
   args.shrink_to_fit();
-  return true;
 }
 
-static bool spawn_prog(const vector<string> &args) {
+static int spawn_prog(const vector<string> &args) {
   const pid_t pid = fork();
 
   switch(pid) {
     case -1:
       perror("fork()");
-      return false;
+      return 127;
 
     case 0:
       // child process
       {
         llzs::CStringArray csa(args);
         execvp(args.front().c_str(), csa.data());
-        exit(1);
+        exit(127);
       }
 
     default: break;
@@ -81,14 +80,14 @@ static bool spawn_prog(const vector<string> &args) {
   // parent process
   int status;
   while(-1 == waitpid(pid, &status, 0)) ;
-  return (WIFEXITED(status) && WEXITSTATUS(status) == 0);
+  return status;
 }
 
 bool config_ent::host_is_online() {
   vector<string> args;
-  if(!prepare_fping_args(args, host_is_ipv6(), host, {}))
-    return false;
-  return spawn_prog(args);
+  prepare_fping_args(args, host_is_ipv6(), host, {});
+  const int ret = spawn_prog(args);
+  return WIFEXITED(ret) && WEXITSTATUS(ret) == 0;
 }
 
 bool config_ent::wait_for_host(const bool online) {
@@ -96,24 +95,30 @@ bool config_ent::wait_for_host(const bool online) {
 
   if(online) {
     // wait for online max ~8,5 minutes
-    if(!prepare_fping_args(args, host_is_ipv6(), host, {"-r", "10"}))
-      return false;
-    return spawn_prog(args);
+    prepare_fping_args(args, host_is_ipv6(), host, {"-r", "10"});
+    const int ret = spawn_prog(args);
+    return WIFEXITED(ret) && WEXITSTATUS(ret) == 0;
   }
 
-  if(!prepare_fping_args(args, host_is_ipv6(), host, {}))
-    return false;
+  prepare_fping_args(args, host_is_ipv6(), host, {});
 
   // wait for offline, but max 2 minutes
   const auto start = chrono::steady_clock::now();
-  const auto get_runtime = [&] {
-    return chrono::duration_cast<chrono::seconds>(chrono::steady_clock::now() - start).count();
-  };
 
-  while(get_runtime() < 120000 && spawn_prog(args))
-    this_thread::sleep_for(chrono::seconds(1));
+  while(true) {
+    const int ret = spawn_prog(args);
+    if(!WIFEXITED(ret) || WEXITSTATUS(ret) == 127)
+      return false;
+    if(WEXITSTATUS(ret) != 0)
+      break;
 
-  return !spawn_prog(args);
+    const auto remaining = 120000 - chrono::duration_cast<chrono::milliseconds>(
+                                    chrono::steady_clock::now() - start).count();
+    if(remaining <= 0) return false;
+    this_thread::sleep_for(chrono::milliseconds(remaining / 10 + 10));
+  }
+
+  return true;
 }
 
 }
