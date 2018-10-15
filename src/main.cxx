@@ -41,16 +41,16 @@ int main(int argc, char *argv[]) {
 
   zs::config_ent *selent = 0;
   {
-    const auto selenti = config.ents.find(args.ent);
+    const auto selenti = config.ents.find(string(args.ent));
     if(selenti == config.ents.end()) {
-      printf("%s: object not found\n", args.ent.c_str());
+      printf("%s: object not found\n", args.ent.data());
       return 1;
     }
     selent = &(selenti->second);
   }
 
   zs::snmp my_snmp;
-  const unordered_map<string, actdat_t> jt = {
+  const unordered_map<zs::string_view, actdat_t> jt = {
     { "status", { false, [&] {
       future<bool> is_online = async(launch::async, [&] { return selent->host_is_online(); });
 
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
   {
     const auto actit = jt.find(args.action);
     if(actit == jt.end()) {
-      fprintf(stderr, "%s: UNKNOWN ACTION\n", args.action.c_str());
+      fprintf(stderr, "%s: UNKNOWN ACTION\n", args.action.data());
       return 1;
     }
     actiondata = actit->second;

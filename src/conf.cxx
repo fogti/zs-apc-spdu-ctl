@@ -21,7 +21,9 @@ bool zs::config::read_from(const string &file) {
       istringstream ss(l);
       while(getline(ss, outlet, ' ')) {
         if(outlet.empty()) continue;
-        entdat->outlets.emplace_back(stoi(outlet));
+        const auto val = stoi(outlet);
+        if(!val) continue;
+        entdat->outlets.emplace_back(val);
       }
     })
 #undef ENTFN
@@ -86,6 +88,6 @@ bool zs::config::read_from(const string &file) {
 }
 
 auto zs::config::get_apc_of(const config_ent* const ent) -> const char * {
-  if(ent && !ent->apc.empty()) return ent->apc.c_str();
-  return apc.c_str();
+  const string &ent_apc = (ent && !ent->apc.empty()) ? ent->apc : apc;
+  return ent_apc.c_str();
 }

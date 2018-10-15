@@ -1,4 +1,4 @@
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}" ${NETSNMP_INCLUDE_DIRS})
+include_directories("${PROJECT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}" ${NETSNMP_INCLUDE_DIRS})
 
 add_executable(zs-apc-spdu-ctl args.cxx conf.cxx confent.cxx confent_outlets.cxx main.cxx
                                snmp/parse.cxx snmp/zs_snmp.cxx)

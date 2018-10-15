@@ -5,5 +5,4 @@
  **/
 
 #pragma once
-#cmakedefine HAVE_CXXH_EX_STRING_VIEW
-#cmakedefine HAVE_CXXH_STRING_VIEW
+#cmakedefine HAVE_STRING_VIEW

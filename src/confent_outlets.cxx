@@ -22,11 +22,11 @@ auto config_ent::get_outlets(zs::snmp &my_snmp) -> ent_snmp_state {
 }
 
 auto config_ent::get_outlets(const std::vector<bool> &st) const noexcept -> ent_snmp_state {
+  const size_t imx = st.size() + 2;
   size_t cnt = 0;
-  for(const auto i : outlets) {
-    if(!i || (i - 1) > st.size()) continue;
-    if(st[i - 1]) ++cnt;
-  }
+  for(const auto i : outlets)
+    if(i < imx && st[i - 1])
+      ++cnt;
   return outlets_cnt2state(cnt);
 }
 

@@ -6,22 +6,18 @@
 
 #pragma once
 #include <config.h>
-#if defined(HAVE_CXXH_STRING_VIEW)
+#ifdef HAVE_STRING_VIEW
 # include <string_view>
-# define HAVE_STRING_VIEW
-#elif defined(HAVE_CXXH_EX_STRING_VIEW)
-# include <experimental/string_view>
-# define HAVE_STRING_VIEW
+#else
+# include <string>
 #endif
 
 namespace zs {
   typedef std::
-#ifndef HAVE_STRING_VIEW
-    string
-#elif defined(HAVE_CXXH_EX_STRING_VIEW)
-    experimental::string_view
-#else
+#ifdef HAVE_STRING_VIEW
     string_view
+#else
+    string
 #endif
       string_view;
 }
