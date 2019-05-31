@@ -11,11 +11,4 @@ find_package(Threads REQUIRED)
 find_package(NetSNMP REQUIRED)
 find_package(LowlevelZS REQUIRED)
 
-include(CheckIncludeFileCXX)
-check_include_file_cxx("string_view" HAVE_STRING_VIEW)
-
-foreach(i config.h)
-  configure_file("${i}.in" "${PROJECT_BINARY_DIR}/${i}")
-endforeach(i)
-
 add_subdirectory(src)

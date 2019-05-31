@@ -5,13 +5,15 @@
 
 #pragma once
 #include <string>
-#include "string_view.hpp"
+#include <zs/ll/llzs_config.h>
 
 namespace zs {
 
+using string_view = llzs::intern::string_view;
+
 struct args_data {
   std::string conffile;
-  zs::string_view action, ent;
+  string_view action, ent;
 };
 
 /* parse_args
