@@ -5,7 +5,6 @@
 
 #include <stdio.h>
 #include <utility>
-#include <config.h>
 #include "args.hpp"
 
 using namespace std;
