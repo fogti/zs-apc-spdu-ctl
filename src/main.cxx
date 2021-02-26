@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
   }
 
   zs::snmp my_snmp;
-  const unordered_map<zs::string_view, actdat_t> jt = {
+  const unordered_map<string_view, actdat_t> jt = {
     { "status", { false, [&] {
       future<bool> is_online = async(launch::async, [&] { return selent->host_is_online(); });
 
