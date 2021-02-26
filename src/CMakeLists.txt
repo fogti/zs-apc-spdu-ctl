@@ -4,4 +4,4 @@ add_executable(zs-apc-spdu-ctl args.cxx conf.cxx confent.cxx confent_outlets.cxx
                                snmp/parse.cxx snmp/zs_snmp.cxx)
 
 target_link_libraries(zs-apc-spdu-ctl Threads::Threads LowlevelZS::lowlevelzs ${NETSNMP_LIBRARIES})
-install(TARGETS zs-apc-spdu-ctl DESTINATION "${INSTALL_BIN_DIR}")
+install(TARGETS zs-apc-spdu-ctl DESTINATION "${CMAKE_INSTALL_BINDIR}")
