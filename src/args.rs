@@ -26,7 +26,6 @@ pub fn print_usage() {
 }
 
 pub fn print_help() {
-    print_usage();
     println!("\n  --conf CONFIGFILE  [default = {}]  use a different configuration\n\n{}",
         DFL_CONFFILE,
         indoc::indoc!(r#"
