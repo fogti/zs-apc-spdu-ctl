@@ -4,7 +4,6 @@ use libc::size_t;
 use std::ffi::CStr;
 use std::os::raw::{c_char, c_void};
 
-#[derive(PartialEq)]
 enum State {
     Start,
     O,
@@ -63,7 +62,7 @@ fn snmp_parse_stat(inp: &[u8]) -> Option<Vec<bool>> {
         }
     }
 
-    if st == State::Start {
+    if let State::Start = st {
         Some(ret)
     } else {
         None

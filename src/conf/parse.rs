@@ -122,7 +122,7 @@ where
                 errs.push(Error::Line {
                     kind: InvalidStmt,
                     linenr,
-                }.into());
+                });
                 continue;
             }
 
@@ -137,7 +137,7 @@ where
                         errs.push(Error::Line {
                             kind: InvalidStmt,
                             linenr,
-                        }.into());
+                        });
                     }
                 }
                 ParseMode::Entity(e) => {
@@ -145,7 +145,7 @@ where
                         errs.push(Error::Line {
                             kind,
                             linenr,
-                        }.into());
+                        });
                     }
                 }
             }
@@ -153,7 +153,7 @@ where
             errs.push(Error::Line {
                 kind: InvalidStmt,
                 linenr,
-            }.into());
+            });
         }
     }
 
